@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
-
+import NewUrlForm from '@/components/NewUrlForm';
+import clientPromise from '@/app/utils/mongodb';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -12,7 +13,6 @@ export const metadata: Metadata = {
 
 const links = [
   { href: '/', label: 'Home' },
-  { href: '/todos', label: 'Todos' },
   { href: '/docs', label: 'Docs' },
 ];
 
@@ -22,18 +22,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
-      <body className={inter.className}>
+    <html lang="en">
+      <body className={`${inter.className} bg-gray-100`}>
         <header>
           <nav>
-            <ul className='flex flex-row'>
+            <ul className="flex flex-row">
               {links.map((link) => (
-                <li key={link.href} className='p-4'>
+                <li key={link.href} className="p-4">
                   <Link href={link.href}>{link.label}</Link>
                 </li>
               ))}
             </ul>
           </nav>
+          <h1>Url shortener</h1>
+          <NewUrlForm />
         </header>
         {children}
       </body>
