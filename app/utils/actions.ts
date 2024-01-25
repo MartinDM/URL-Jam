@@ -6,6 +6,7 @@ import short from 'short-uuid';
 
 export const newUrl = async (formData) => {
   const fullUrl = formData.get('fullUrl') as string;
+  console.log(fullUrl);
   await db.url.create({
     data: {
       fullUrl,

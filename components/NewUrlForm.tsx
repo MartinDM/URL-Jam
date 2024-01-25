@@ -2,9 +2,11 @@
 import { newUrl } from '@/app/utils/actions';
 import { useState, useRef, useEffect } from 'react';
 
+const handleSubmit = (e) => {
+  console.log('sibmitted', e);
+};
+
 const NewUrlForm = ({}) => {
-  const [url, setUrl] = useState('');
-  const handleChange = (e) => setUrl(e.target.value);
   const ref = useRef<HTMLFormElement>(null);
   ref.current?.reset();
 
@@ -18,7 +20,7 @@ const NewUrlForm = ({}) => {
           placeholder="http://"
           aria-label="Full Url"
         />
-        <button className="flex-shrink-0 bg-teal-500 uppercase hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">
+        <button className=" bg-teal-500 uppercase hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">
           Jam
         </button>
       </div>
