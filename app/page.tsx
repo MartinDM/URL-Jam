@@ -12,6 +12,7 @@ const getData = async () => {
 
 const Home = async ({}) => {
   const urls = await getData();
+  console.log(urls);
   return (
     <div>
       <main className="flex min-h-screen flex-col items-start m-6">
