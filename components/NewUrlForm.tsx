@@ -2,10 +2,6 @@
 import { newUrl } from '@/app/utils/actions';
 import { useState, useRef, useEffect } from 'react';
 
-const handleSubmit = (e) => {
-  console.log('sibmitted', e);
-};
-
 const NewUrlForm = ({}) => {
   const ref = useRef<HTMLFormElement>(null);
   ref.current?.reset();
@@ -14,7 +10,7 @@ const NewUrlForm = ({}) => {
     <form ref={ref} action={newUrl} className="w-full max-w-sm">
       <div className="flex items-center border-b border-teal-500 py-2">
         <input
-          className="appearance-none bg-transparent border-none w-full text-black mr-3 py-1 px-2 leading-tight focus:outline-none"
+          className="appearance-none bg-transparent border-black w-full text-black mr-3 py-1 px-2 leading-tight focus:outline-none"
           type="text"
           name="fullUrl"
           placeholder="http://"

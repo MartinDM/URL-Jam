@@ -7,17 +7,17 @@ import { revalidatePath } from 'next/cache';
 
 export const GET = async (req: NextRequest, { params }) => {
   // Associate urlRef to shortUrl
-  const shortUrl = params.urlRef;
-  const url = new URL(req.url);
+  const shortUrl = params.shortUrl;
   const doc = await db.url.findFirst({
     where: { shortUrl },
   });
+  console.log(doc);
   if (doc && doc.fullUrl) {
     if (isValidUrl(doc.fullUrl)) {
-      const fqUrl = normalizeUrl(doc.fullUrl, { defaultProtocol: 'https' });
-      return NextResponse.redirect(new URL(fqUrl));
+      console.log(doc.fullUrl);
+      return NextResponse.redirect(doc.fullUrl);
     }
   }
   console.log('No valid URL - Redirect home');
-  return NextResponse.redirect(url.origin);
+  return NextResponse.redirect(new URL(req.url).origin);
 };

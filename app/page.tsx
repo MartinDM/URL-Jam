@@ -4,7 +4,7 @@ import db from '@/app/utils/db';
 const getData = async () => {
   const urls = await db.url.findMany({
     orderBy: {
-      fullUrl: 'desc',
+      id: 'desc',
     },
   });
   return urls;
@@ -12,7 +12,6 @@ const getData = async () => {
 
 const Home = async ({}) => {
   const urls = await getData();
-  console.log(urls);
   return (
     <div>
       <main className="flex min-h-screen flex-col items-start m-6">

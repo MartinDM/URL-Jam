@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import Link from 'next/link';
 import NewUrlForm from '@/components/NewUrlForm';
-import clientPromise from '@/app/utils/mongodb';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -18,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gray-100`}>
+      <body className={`${inter.className} bg-gray-900`}>
         <header>
           <h1>Url shortener</h1>
         </header>
