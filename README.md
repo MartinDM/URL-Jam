@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# URL Jam
 
-## Getting Started
+<img width="550" alt="image" src="https://github.com/MartinDM/url-jam/assets/7467069/ee9977b2-4c0c-48de-a856-6fc7eb343552">
 
-First, run the development server:
+URL Jam is a simple URL shortener application built with Next.js server actions, MongoDB, and Prisma. It allows users to shorten long URLs into more manageable and shareable links.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Features
+
+- Shorten long URLs into concise links.
+- Link history in LocalStorage with deletion
+- Easy setup with MongoDB and Prisma integration.
+
+## Future features
+
+- Track clicks
+- Customise short link
+
+## Technologies Used
+
+- **Next.js** x **TypeScript**
+- **MongoDB:** A NoSQL database used for storing URL data on Atlas
+- **Prisma:** A modern database toolkit for TypeScript and Node.js, used for database ORM (Object-Relational Mapping).
+
+## Prerequisites
+
+Before running the application, ensure you have the following installed:
+
+- Node.js
+- MongoDB
+- Prisma CLI
+
+## Installation
+
+1. Clone the repository:
+
+```
+git clone https://github.com/martinDM/url-jam.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Navigate to the project directory and download dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+cd url-jam
+yarn install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+4. Set up the environment variables by creating a `.env` file and adding the following:
 
-## Learn More
+```
+DATABASE_URL="mongodb://[CONNECTION STRING FOR ATLAS OR LOCAL MONGO INSTANCE]"
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Generate Prisma client:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+npx prisma generate
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Usage
 
-## Deploy on Vercel
+1. Start the development server:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+yarn dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+2. Access the application in your browser at `http://localhost:3000`.
+
+3. Enter a long URL in the input field and click "Jam" to generate a shortened URL.
+
+4. Share the shortened URL with others.
+
+## Contributors
+
+- Martin di Martino-Marriott
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
