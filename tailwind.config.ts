@@ -7,10 +7,14 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    colors: {
-      lime: {
-        DEFAULT: '#ff0000',
+    extend: {
+      dropShadow: {
+        xl: '0 22px 17px rgb(0 41 106)',
+        sm: '#0d0e10 0 0 115px -23px',
       },
+    },
+    container: {
+      padding: '2rem',
     },
   },
   plugins: [],

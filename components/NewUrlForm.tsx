@@ -1,26 +1,35 @@
 'use client';
-import { newUrl } from '@/app/utils/actions';
-import { useState, useRef, useEffect } from 'react';
+import { handleCopy, newUrl } from '@/app/utils/actions';
+import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
+import { FaRegCopy } from 'react-icons/fa6';
+import db from '@/app/utils/db';
+import { useUrlContext } from '@/app/urlProvider';
 
-const NewUrlForm = ({}) => {
+const NewUrlForm = () => {
   const ref = useRef<HTMLFormElement>(null);
   ref.current?.reset();
 
+  const { generate } = useUrlContext();
+  const [generated, setGenerated] = generate;
+
   return (
-    <form ref={ref} action={newUrl} className="w-full max-w-sm">
-      <div className="flex items-center border-b border-teal-500 py-2">
-        <input
-          className="appearance-none bg-transparent border-black w-full text-black mr-3 py-1 px-2 leading-tight focus:outline-none"
-          type="text"
-          name="fullUrl"
-          placeholder="http://"
-          aria-label="Full Url"
-        />
-        <button className=" bg-teal-500 uppercase hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">
-          Jam
-        </button>
-      </div>
-    </form>
+    <>
+      <form ref={ref} action={newUrl} className="w-full">
+        <div className="flex items-stretch py-2">
+          <input
+            className="appearance-none bg-gray-900 w-full mr-3 p-4 pl-6 text-white leading-tight border border-lime-400 focus:outline-none"
+            type="text"
+            name="fullUrl"
+            placeholder="http://"
+            aria-label="Full Url"
+          />
+          <button className="bg-lime-400 hover:bg-lime-500 text-gray-900 text-sm px-4 font-bold">
+            Jam
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 

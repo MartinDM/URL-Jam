@@ -2,36 +2,107 @@
 import Link from 'next/link';
 import { GiCrossMark } from 'react-icons/gi';
 import { useState, useEffect } from 'react';
+import UrlProvider, { useUrlContext } from '@/app/urlProvider';
+import { revalidatePath } from 'next/cache';
+import { useTransition } from 'react';
 import { deleteUrl } from '@/app/utils/actions';
+import { FaRegCopy } from 'react-icons/fa6';
+
+export interface IUrl {
+  id: string;
+  shortUrl: string;
+  fullUrl: string;
+}
 
 const UrlList = ({ urls }) => {
-  // const hasWindow = typeof window === 'object';
-  // const [baseUrl, setBaseUrl] = useState<string | undefined>(
-  //   hasWindow ? window.location.host : ''
-  // );
+  const [isPending, startTransition] = useTransition();
+  const { generate } = useUrlContext();
+  const [generatedUrl, setGeneratedUrl] = generate;
+  const [topUrl, setTopUrl] = useState<IUrl | null>(null);
+  const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //    setBaseUrl(window.location.origin);
-  // }, []);
+  const baseUrl =
+    (window.location && window.location.href + 'short/') || './short/';
 
-  if (!urls) return 'None yet';
-  return urls.map((u) => {
-    return (
-      <div
-        key={u.id}
-        className={`px-8 py-2 border border-bottom cursor-pointer`}
-      >
-        <p>
-          <GiCrossMark
-            onClick={() => deleteUrl(u.id)}
-            className="text-teal-200"
-          />
-          <Link target="blank" href={`/short/${u.shortUrl}`}>
-            {`/short/${u.shortUrl}`}
-          </Link>
-        </p>
-      </div>
+  const handleCopy = async (e: MouseEvent, url: string) => {
+    const shortUrl = `${baseUrl + url}`;
+    await navigator.clipboard.writeText(shortUrl);
+  };
+
+  const handleDelete = (id: string) => {
+    setDeletingId(id);
+    console.log(deletingId);
+    try {
+      deleteUrl(id);
+    } catch (e) {
+      console.log(e);
+    }
+    setDeletingId(null);
+  };
+
+  useEffect(() => {
+    const baseUrl = window.location.href + 'short/';
+    const newestUrl = urls.reduce((prev, current) =>
+      prev && prev.id > current.id ? prev : current
     );
-  });
+    setTopUrl(newestUrl);
+    if (topUrl && topUrl.id < newestUrl.id) {
+      setTopUrl(newestUrl);
+      setGeneratedUrl(`${baseUrl + newestUrl.shortUrl}`);
+    } else {
+      setGeneratedUrl(null);
+    }
+  }, [urls]);
+
+  return (
+    <table className="p-4 mx-auto justify-items-stretch">
+      <thead className={'text-left'}>
+        <tr>
+          <th>
+            <h3 className="mx-auto text-bold text-lime-400 text-lg">
+              Your URLs
+            </h3>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {urls.map((u: IUrl) => (
+          <tr
+            key={u.id}
+            className={`flex content-between    gap-5 items-center border-b border-b-slate-700 ${
+              deletingId === u.id ? 'opacity-30' : ''
+            }`}
+          >
+            <td className="flex py-3 pr-8">
+              <FaRegCopy
+                title="Copy short Url"
+                className="cursor-pointer text-xl text-lime-400 mr-4 hover:text-lime-200 transition-colors"
+                onClick={(e) => handleCopy(e, u.shortUrl)}
+              />
+              <Link
+                target="blank"
+                className="text-white"
+                href={`${baseUrl + u.shortUrl}`}
+              >
+                {`${baseUrl + u.shortUrl}`}
+              </Link>
+            </td>
+            <td className="flex items-center ml-auto text-slate-500 ">
+              <p className="break-all cursor-auto pr-2" title={u.fullUrl}>
+                {u.fullUrl.substring(0, 30) + '...'}
+              </p>
+              <GiCrossMark
+                title="Delete entry"
+                onClick={() => startTransition(() => handleDelete(u.id))}
+                className="text-lime-400 flex-none hover:text-red-500 cursor-pointer mr-4 transition-colors"
+              />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 };
+
 export default UrlList;
