@@ -18,7 +18,15 @@ export default function UrlProvider({ children }) {
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
   useEffect(() => {
-    const baseUrl = window?.location.href + 'short/';
+    let baseUrl: string;
+
+    if (typeof window !== 'undefined') {
+      // Your client-side code that uses
+      baseUrl = `${window.location.href}short/`;
+    } else {
+      baseUrl = './short';
+    }
+
     if (localUrls.length > 0) {
       const newestUrl = localUrls?.reduce((prev, current) =>
         prev && prev.id > current.id ? prev : current

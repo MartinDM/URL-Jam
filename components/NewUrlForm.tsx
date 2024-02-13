@@ -12,11 +12,17 @@ const NewUrlForm = () => {
   const { urls } = useUrlContext();
   const [localUrls, setLocalUrls] = urls;
 
-  const handleSubmit = async (e) => {
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const newEntry = await newUrl(e.target[0].value);
-    const newUrls: IUrl[] = [...localUrls, newEntry];
-    setLocalUrls(newUrls);
+    if (e.target[0].value.length) {
+      startTransition(async () => {
+        const newEntry = await newUrl(e.target[0].value);
+        const newUrls: IUrl[] = [...localUrls, newEntry];
+        setLocalUrls(newUrls);
+      });
+    }
   };
 
   return (
@@ -30,7 +36,10 @@ const NewUrlForm = () => {
             placeholder="http://"
             aria-label="Full Url"
           />
-          <button className="bg-lime-400 hover:bg-lime-500 text-gray-900 text-sm px-4 font-bold">
+          <button
+            disabled={isPending}
+            className="bg-lime-400 hover:bg-lime-500 text-gray-900 text-sm px-4 font-bold"
+          >
             Jam
           </button>
         </div>

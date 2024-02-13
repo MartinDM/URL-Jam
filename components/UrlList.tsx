@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { GiCrossMark } from 'react-icons/gi';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUrlContext } from '@/app/urlProvider';
 import { useTransition } from 'react';
 import { FaRegCopy } from 'react-icons/fa6';
@@ -18,9 +18,12 @@ const UrlList = () => {
   const { generate, urls } = useUrlContext();
   const [generatedUrl, setGeneratedUrl] = generate;
   const [localUrls, setLocalUrls] = urls;
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const baseUrl =
-    (window.location && window.location.href + 'short/') || './short/';
+  let baseUrl: string;
+  if (typeof window !== 'undefined') {
+    baseUrl = `${window.location.origin}/short/`;
+  }
 
   const handleCopy = async (e: MouseEvent, url: string) => {
     const shortUrl = `${baseUrl + url}`;
@@ -29,7 +32,9 @@ const UrlList = () => {
 
   const handleDeleteLocal = (id: string) => {
     const newUrls = localUrls.filter((u) => u.id !== id);
-    setLocalUrls(newUrls);
+    startTransition(() => {
+      setLocalUrls(newUrls);
+    });
   };
 
   return (
@@ -38,7 +43,7 @@ const UrlList = () => {
         <tr>
           <th>
             <h3 className="mx-auto text-bold text-lime-400 text-lg">
-              {!!localUrls.length && 'Your URLs'}
+              {!!localUrls?.length && 'Your URLs'}
             </h3>
           </th>
         </tr>
@@ -47,8 +52,8 @@ const UrlList = () => {
         {localUrls?.map((u: IUrl) => (
           <tr
             key={u.id}
-            className={`flex content-between    gap-5 items-center border-b border-b-slate-700 ${
-              deletingId === u.id ? 'opacity-30' : ''
+            className={`flex content-between gap-5 items-center border-b border-b-slate-700 ${
+              isPending ? 'opacity-30' : ''
             }`}
           >
             <td className="flex py-3 pr-8">
@@ -74,6 +79,7 @@ const UrlList = () => {
                 onClick={() => startTransition(() => handleDeleteLocal(u.id))}
                 className="text-lime-400 flex-none hover:text-red-500 cursor-pointer mr-4 transition-colors"
               />
+              <p>{isPending}</p>
             </td>
           </tr>
         ))}

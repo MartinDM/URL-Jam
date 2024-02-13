@@ -24,7 +24,6 @@ export const newUrl = async (fullUrl: string) => {
       removeTrailingSlash: true,
     });
     fullUrl = new URL(fullUrl).href;
-    console.log(fullUrl);
     const shortUrl = short.generate().slice(0, 7);
     try {
       const entry = await db.url.create({
@@ -33,7 +32,8 @@ export const newUrl = async (fullUrl: string) => {
           shortUrl,
         },
       });
-      return entry;
+      const { clicks, ...newEntry } = entry;
+      return newEntry;
     } catch (e) {
       console.log(e);
     }
