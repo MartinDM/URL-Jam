@@ -5,29 +5,37 @@ import short from 'short-uuid';
 import { hasProtocol, isValidUrl } from './isValidUrl';
 import normalizeUrl from 'normalize-url';
 
-export const newUrl = async (formData: FormData) => {
-  let fullUrl = formData.get('fullUrl') as string;
+export const getData = async () => {
+  const urls = await db.url.findMany({
+    orderBy: {
+      id: 'desc',
+    },
+  });
+  return urls;
+};
+
+export const newUrl = async (fullUrl: string) => {
   if (fullUrl.length === 0) return;
   if (!hasProtocol(fullUrl)) {
     fullUrl = `https://${fullUrl}`;
   }
   if (isValidUrl(fullUrl)) {
-    fullUrl = new URL(fullUrl).href;
-    console.log(fullUrl);
     fullUrl = normalizeUrl(fullUrl, {
       removeTrailingSlash: true,
     });
+    fullUrl = new URL(fullUrl).href;
+    console.log(fullUrl);
     const shortUrl = short.generate().slice(0, 7);
     try {
-      await db.url.create({
+      const entry = await db.url.create({
         data: {
           fullUrl,
           shortUrl,
         },
       });
-      revalidatePath('/');
+      return entry;
     } catch (e) {
-      return console.error(e.message);
+      console.log(e);
     }
   } else {
     return console.error('invalid', fullUrl);

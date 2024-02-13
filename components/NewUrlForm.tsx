@@ -1,21 +1,27 @@
 'use client';
-import { handleCopy, newUrl } from '@/app/utils/actions';
-import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import { FaRegCopy } from 'react-icons/fa6';
-import db from '@/app/utils/db';
+import { newUrl } from '@/app/utils/actions';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { useUrlContext } from '@/app/urlProvider';
+import { useLocalStorage } from '@/app/utils/useLocalStorage';
+import { IUrl } from './UrlList';
 
 const NewUrlForm = () => {
   const ref = useRef<HTMLFormElement>(null);
   ref.current?.reset();
 
-  const { generate } = useUrlContext();
-  const [generated, setGenerated] = generate;
+  const { urls } = useUrlContext();
+  const [localUrls, setLocalUrls] = urls;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newEntry = await newUrl(e.target[0].value);
+    const newUrls: IUrl[] = [...localUrls, newEntry];
+    setLocalUrls(newUrls);
+  };
 
   return (
     <>
-      <form ref={ref} action={newUrl} className="w-full">
+      <form ref={ref} onSubmit={(e) => handleSubmit(e)} className="w-full">
         <div className="flex items-stretch py-2">
           <input
             className="appearance-none bg-gray-900 w-full mr-3 p-4 pl-6 text-white leading-tight border border-lime-400 focus:outline-none"

@@ -1,8 +1,8 @@
 'use client';
-import db from '@/app/utils/db';
 import { IUrl } from '@/components/UrlList';
 
 import { createContext, useContext, useEffect, useState } from 'react';
+import { useLocalStorage } from './utils/useLocalStorage';
 
 const UrlContext = createContext([]);
 
@@ -12,12 +12,34 @@ export function useUrlContext() {
 
 export default function UrlProvider({ children }) {
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
-  const [shortUrls, setShortUrls] = useState<IUrl[]>([]);
+  const [localUrls, setLocalUrls] = useLocalStorage([], 'urls');
+
+  const [topUrl, setTopUrl] = useState<IUrl | null>(null);
+  const [isCopied, setIsCopied] = useState<boolean>(false);
+
+  useEffect(() => {
+    const baseUrl = window?.location.href + 'short/';
+    if (localUrls.length > 0) {
+      const newestUrl = localUrls?.reduce((prev, current) =>
+        prev && prev.id > current.id ? prev : current
+      );
+      setTopUrl(newestUrl);
+      if (topUrl && topUrl.id < newestUrl.id) {
+        setTopUrl(newestUrl);
+        setGeneratedUrl(`${baseUrl + newestUrl.shortUrl}`);
+      } else {
+        setGeneratedUrl(null);
+      }
+    }
+    // urls is localstorage
+  }, [localUrls]);
 
   return (
     <UrlContext.Provider
       value={{
         generate: [generatedUrl, setGeneratedUrl],
+        copy: [isCopied, setIsCopied],
+        urls: [localUrls, setLocalUrls],
       }}
     >
       {children}

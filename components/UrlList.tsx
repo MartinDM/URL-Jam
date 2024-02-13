@@ -1,11 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { GiCrossMark } from 'react-icons/gi';
-import { useState, useEffect } from 'react';
-import UrlProvider, { useUrlContext } from '@/app/urlProvider';
-import { revalidatePath } from 'next/cache';
+import { useState } from 'react';
+import { useUrlContext } from '@/app/urlProvider';
 import { useTransition } from 'react';
-import { deleteUrl } from '@/app/utils/actions';
 import { FaRegCopy } from 'react-icons/fa6';
 
 export interface IUrl {
@@ -14,13 +12,12 @@ export interface IUrl {
   fullUrl: string;
 }
 
-const UrlList = ({ urls }) => {
+const UrlList = () => {
   const [isPending, startTransition] = useTransition();
-  const { generate } = useUrlContext();
-  const [generatedUrl, setGeneratedUrl] = generate;
-  const [topUrl, setTopUrl] = useState<IUrl | null>(null);
-  const [isCopied, setIsCopied] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const { generate, urls } = useUrlContext();
+  const [generatedUrl, setGeneratedUrl] = generate;
+  const [localUrls, setLocalUrls] = urls;
 
   const baseUrl =
     (window.location && window.location.href + 'short/') || './short/';
@@ -30,44 +27,24 @@ const UrlList = ({ urls }) => {
     await navigator.clipboard.writeText(shortUrl);
   };
 
-  const handleDelete = (id: string) => {
-    setDeletingId(id);
-    console.log(deletingId);
-    try {
-      deleteUrl(id);
-    } catch (e) {
-      console.log(e);
-    }
-    setDeletingId(null);
+  const handleDeleteLocal = (id: string) => {
+    const newUrls = localUrls.filter((u) => u.id !== id);
+    setLocalUrls(newUrls);
   };
 
-  useEffect(() => {
-    const baseUrl = window.location.href + 'short/';
-    const newestUrl = urls.reduce((prev, current) =>
-      prev && prev.id > current.id ? prev : current
-    );
-    setTopUrl(newestUrl);
-    if (topUrl && topUrl.id < newestUrl.id) {
-      setTopUrl(newestUrl);
-      setGeneratedUrl(`${baseUrl + newestUrl.shortUrl}`);
-    } else {
-      setGeneratedUrl(null);
-    }
-  }, [urls]);
-
   return (
-    <table className="p-4 mx-auto justify-items-stretch">
+    <table className="p-4 mx-auto justify-items-stretch min-w-[60%]">
       <thead className={'text-left'}>
         <tr>
           <th>
             <h3 className="mx-auto text-bold text-lime-400 text-lg">
-              Your URLs
+              {!!localUrls.length && 'Your URLs'}
             </h3>
           </th>
         </tr>
       </thead>
       <tbody>
-        {urls.map((u: IUrl) => (
+        {localUrls?.map((u: IUrl) => (
           <tr
             key={u.id}
             className={`flex content-between    gap-5 items-center border-b border-b-slate-700 ${
@@ -90,11 +67,11 @@ const UrlList = ({ urls }) => {
             </td>
             <td className="flex items-center ml-auto text-slate-500 ">
               <p className="break-all cursor-auto pr-2" title={u.fullUrl}>
-                {u.fullUrl.substring(0, 30) + '...'}
+                {u.fullUrl?.substring(0, 30) + '...'}
               </p>
               <GiCrossMark
                 title="Delete entry"
-                onClick={() => startTransition(() => handleDelete(u.id))}
+                onClick={() => startTransition(() => handleDeleteLocal(u.id))}
                 className="text-lime-400 flex-none hover:text-red-500 cursor-pointer mr-4 transition-colors"
               />
             </td>
