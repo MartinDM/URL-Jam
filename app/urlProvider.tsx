@@ -1,8 +1,7 @@
 'use client';
-import { IUrl } from '@/components/UrlList';
-
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useLocalStorage } from './utils/useLocalStorage';
+import { ValidEntry } from './utils/validations';
 
 const UrlContext = createContext([]);
 
@@ -12,9 +11,8 @@ export function useUrlContext() {
 
 export default function UrlProvider({ children }) {
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
-  const [localUrls, setLocalUrls] = useLocalStorage([], 'urls');
-
-  const [topUrl, setTopUrl] = useState<IUrl | null>(null);
+  const [localUrls, setLocalUrls] = useLocalStorage(null, 'urls');
+  const [topUrl, setTopUrl] = useState<ValidEntry[] | null>(null);
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
   useEffect(() => {

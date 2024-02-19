@@ -2,9 +2,7 @@
 import db from '@/app/utils/db';
 import { revalidatePath } from 'next/cache';
 import short from 'short-uuid';
-import { hasProtocol, isValidUrl } from './isValidUrl';
-import normalizeUrl from 'normalize-url';
-
+import { ValidEntry, ValidUrl, hasProtocol } from './validations';
 export const getData = async () => {
   const urls = await db.url.findMany({
     orderBy: {
@@ -14,31 +12,22 @@ export const getData = async () => {
   return urls;
 };
 
-export const newUrl = async (fullUrl: string) => {
-  if (fullUrl.length === 0) return;
-  if (!hasProtocol(fullUrl)) {
-    fullUrl = `https://${fullUrl}`;
-  }
-  if (isValidUrl(fullUrl)) {
-    fullUrl = normalizeUrl(fullUrl, {
-      removeTrailingSlash: true,
-    });
-    fullUrl = new URL(fullUrl).href;
+export const newUrl = (fullUrl: string) => {
+  const isValidUrl = ValidUrl.safeParse(fullUrl);
+  if (isValidUrl.success) {
     const shortUrl = short.generate().slice(0, 7);
-    try {
-      const entry = await db.url.create({
-        data: {
-          fullUrl,
-          shortUrl,
-        },
-      });
-      const { clicks, ...newEntry } = entry;
-      return newEntry;
-    } catch (e) {
-      console.log(e);
-    }
+    // TODO: Implement click count
+    const clicks = 0;
+    const entry = db.url.create({
+      data: {
+        fullUrl,
+        shortUrl,
+        clicks,
+      },
+    });
+    return entry;
   } else {
-    return console.error('invalid', fullUrl);
+    return console.error(isValidUrl.error.issues[0].message);
   }
 };
 

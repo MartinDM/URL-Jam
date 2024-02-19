@@ -1,27 +1,47 @@
 'use client';
 import { newUrl } from '@/app/utils/actions';
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useRef, useState, useTransition } from 'react';
 import { useUrlContext } from '@/app/urlProvider';
-import { useLocalStorage } from '@/app/utils/useLocalStorage';
-import { IUrl } from './UrlList';
+import { ValidInput, ValidUrl, hasProtocol } from '@/app/utils/validations';
+import { z } from 'zod';
+import normalizeUrl from 'normalize-url';
 
 const NewUrlForm = () => {
   const ref = useRef<HTMLFormElement>(null);
   ref.current?.reset();
 
-  const { urls } = useUrlContext();
+  const { urls, generate } = useUrlContext();
   const [localUrls, setLocalUrls] = urls;
+  const [generatedUrl, setGeneratedUrl] = generate;
+  const [errors, setErrors] = useState<string | null>(null);
 
   const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (e.target[0].value.length) {
-      startTransition(async () => {
-        const newEntry = await newUrl(e.target[0].value);
-        const newUrls: IUrl[] = [...localUrls, newEntry];
-        setLocalUrls(newUrls);
+    setErrors(null);
+    setGeneratedUrl(null);
+    let fullUrl = e.target[0].value.trim();
+
+    const isValidInput = ValidInput.safeParse(fullUrl);
+    if (!isValidInput.success) {
+      setErrors(isValidInput.error.issues[0].message);
+      return;
+    }
+    if (!hasProtocol(fullUrl)) {
+      fullUrl = `https://${fullUrl}`;
+    }
+    const isValidUrl = ValidUrl.safeParse(fullUrl);
+    if (isValidUrl.success) {
+      fullUrl = normalizeUrl(fullUrl, {
+        defaultProtocol: 'https',
       });
+      const newEntry = await newUrl(fullUrl);
+      const newUrls: ValidUrl[] = [...localUrls, newEntry];
+      setLocalUrls(newUrls);
+    } else {
+      setErrors(isValidUrl.error.issues[0].message);
+      return;
     }
   };
 
@@ -43,6 +63,11 @@ const NewUrlForm = () => {
             Jam
           </button>
         </div>
+        {errors && (
+          <div className="pb-3">
+            <p className="text-lime-500 ">{errors}</p>
+          </div>
+        )}
       </form>
     </>
   );

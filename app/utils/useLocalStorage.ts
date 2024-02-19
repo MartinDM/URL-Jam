@@ -1,11 +1,11 @@
 'use client';
-import { IUrl } from '@/components/UrlList';
 import { useEffect, useState } from 'react';
+import { ValidEntry } from './validations';
 
 export const useLocalStorage = (
-  defaultValue: IUrl[] = [],
+  defaultValue: ValidEntry[] | null,
   key: string
-): string | any[] => {
+) => {
   const [value, setValue] = useState(() => {
     if (typeof window !== 'undefined') {
       const localStorageValue = window.localStorage.getItem(key);
