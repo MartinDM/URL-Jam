@@ -6,6 +6,7 @@ import { useUrlContext } from '@/app/urlProvider';
 import { useTransition } from 'react';
 import { FaRegCopy } from 'react-icons/fa6';
 import ClipLoader from 'react-spinners/ClipLoader';
+import { ValidEntry } from '@/app/utils/validations';
 
 const UrlList = () => {
   const [isPending, startTransition] = useTransition();
@@ -38,25 +39,25 @@ const UrlList = () => {
   }, []);
 
   return (
-    <div className="p-4 mx-auto justify-items-stretch min-w-[60%]">
+    <div className="p-4 mx-auto min-w-full lg:max-w-3xl">
       {isLoading ? (
         <ClipLoader loading={isLoading} color="#a3e635" className="mx-auto" />
       ) : (
-        <table className="">
-          <thead className={'text-left'}>
+        <table className="min-w-full grow">
+          <thead className={'basis-[100%]'}>
             <tr>
               <th>
-                <h3 className="mx-auto text-bold text-lime-400 text-lg">
+                <h3 className="mx-auto text-left text-lime-400 text-lg">
                   {!!localUrls?.length && 'Your URLs'}
                 </h3>
               </th>
             </tr>
           </thead>
           <tbody>
-            {localUrls.map((u: IUrl) => (
+            {localUrls.map((u: ValidEntry) => (
               <tr
                 key={u.id}
-                className={`flex content-between gap-5 items-center border-b border-b-slate-700 ${
+                className={`gap-5 items-center flex border-b border-b-slate-700 ${
                   isPending ? 'opacity-30' : ''
                 }`}
               >
@@ -74,7 +75,7 @@ const UrlList = () => {
                     {`${baseUrl + u.shortUrl}`}
                   </Link>
                 </td>
-                <td className="flex items-center ml-auto text-slate-500 ">
+                <td className="flex items-center py-3 ml-auto text-slate-500">
                   <p className="break-all cursor-auto pr-2" title={u.fullUrl}>
                     {u.fullUrl.length > 50
                       ? u.fullUrl.substring(0, 50) + '...'
