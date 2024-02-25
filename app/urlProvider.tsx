@@ -11,7 +11,7 @@ export function useUrlContext() {
 
 export default function UrlProvider({ children }) {
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
-  const [localUrls, setLocalUrls] = useLocalStorage(null, 'urls');
+  const [localUrls, setLocalUrls] = useLocalStorage([], 'urls');
   const [topUrl, setTopUrl] = useState<ValidEntry[] | null>(null);
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
@@ -19,13 +19,12 @@ export default function UrlProvider({ children }) {
     let baseUrl: string;
 
     if (typeof window !== 'undefined') {
-      // Your client-side code that uses
       baseUrl = `${window.location.href}short/`;
     } else {
       baseUrl = './short';
     }
 
-    if (localUrls.length > 0) {
+    if (localUrls?.length > 0) {
       const newestUrl = localUrls?.reduce((prev, current) =>
         prev && prev.id > current.id ? prev : current
       );

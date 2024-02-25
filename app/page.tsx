@@ -7,15 +7,13 @@ import Link from 'next/link';
 const Home = async () => {
   //const urls = await getData();
   return (
-    <main className="flex min-h-screen flex-col items-start m-6">
-      <div className="container">
-        <div className="mx-auto p-8 px-16 mb-10 max-w-lg bg-gradient-to-b from-[#172031] rounded-xl drop-shadow-sm">
+    <main className="flex min-h-screen items-start md:m-6 ">
+      <div className="max-w-full md:max-w-xl md:container mx-auto p-0 md:px-1">
+        <div className="mx-auto bg-gradient-to-b from-[#172031] rounded-xl drop-shadow-sm p-3 px-2 py-5 mt-4 mb-4 md:p-8 md:px-15 md:mb-2">
           <NewUrlForm />
           <CopyBox />
         </div>
-        <div className="p-3 px-16">
-          <UrlList />
-        </div>
+        <UrlList />
         <div className="text-center text-slate-500 text-sm mt-7">
           <p>
             A Next JS project using Server Components by

@@ -1,8 +1,7 @@
 'use server';
 import db from '@/app/utils/db';
-import { revalidatePath } from 'next/cache';
 import short from 'short-uuid';
-import { ValidEntry, ValidUrl, hasProtocol } from './validations';
+import { ValidUrl } from './validations';
 export const getData = async () => {
   const urls = await db.url.findMany({
     orderBy: {
@@ -36,7 +35,7 @@ export const deleteUrl = async (id: string) => {
     await db.url.delete({
       where: { id },
     });
-    revalidatePath('/');
+    //revalidatePath('/');
   } catch (e) {
     console.error(e);
   }

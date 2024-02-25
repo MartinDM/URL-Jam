@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const ValidEntry = z.object({
   fullUrl: z.string().url(),
-  shorturl: z.string().uuid(),
+  shortUrl: z.string().uuid(),
   clicks: z.number(),
   id: z.string(),
 });

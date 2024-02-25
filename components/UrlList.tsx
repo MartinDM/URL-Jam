@@ -15,18 +15,15 @@ const UrlList = () => {
   const [localUrls, setLocalUrls] = urls;
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  let baseUrl: string;
-  if (typeof window !== 'undefined') {
-    baseUrl = `${window.location.origin}/short/`;
-  }
+  const baseUrl = './short/';
 
   const handleCopy = async (e: MouseEvent, url: string) => {
-    const shortUrl = `${baseUrl + url}`;
+    const shortUrl = `${window.location.href}short/${url}`;
     await navigator.clipboard.writeText(shortUrl);
   };
 
   const handleDeleteLocal = (id: string) => {
-    const newUrls = localUrls.filter((u) => u.id !== id);
+    const newUrls = localUrls.filter((u: ValidEntry) => u.id !== id);
     startTransition(() => {
       setLocalUrls(newUrls);
     });
@@ -39,61 +36,63 @@ const UrlList = () => {
   }, []);
 
   return (
-    <div className="p-4 mx-auto min-w-full lg:max-w-3xl">
+    <div className="p-4 pt-0 lg:max-w-3xl ">
       {isLoading ? (
-        <ClipLoader loading={isLoading} color="#a3e635" className="mx-auto" />
+        <ClipLoader
+          loading={true}
+          color="#a3e635"
+          className="m-auto"
+          cssOverride={{ display: 'block' }}
+        />
       ) : (
-        <table className="min-w-full grow">
-          <thead className={'basis-[100%]'}>
-            <tr>
-              <th>
-                <h3 className="mx-auto text-left text-lime-400 text-lg">
-                  {!!localUrls?.length && 'Your URLs'}
-                </h3>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+        <>
+          <h3 className="mx-auto text-left text-lime-400 text-lg">
+            {!!localUrls?.length && 'Your URLs'}
+          </h3>
+          <ul>
             {localUrls.map((u: ValidEntry) => (
-              <tr
+              <li
                 key={u.id}
-                className={`gap-5 items-center flex border-b border-b-slate-700 ${
+                className={`py-1 border-b border-b-slate-700 ${
                   isPending ? 'opacity-30' : ''
                 }`}
               >
-                <td className="flex py-3 pr-8">
-                  <FaRegCopy
-                    title="Copy short Url"
-                    className="cursor-pointer text-xl text-lime-400 mr-4 hover:text-lime-200 transition-colors"
-                    onClick={(e) => handleCopy(e, u.shortUrl)}
-                  />
-                  <Link
-                    target="blank"
-                    className="text-white"
-                    href={`${baseUrl + u.shortUrl}`}
-                  >
-                    {`${baseUrl + u.shortUrl}`}
-                  </Link>
-                </td>
-                <td className="flex items-center py-3 ml-auto text-slate-500">
-                  <p className="break-all cursor-auto pr-2" title={u.fullUrl}>
-                    {u.fullUrl.length > 50
-                      ? u.fullUrl.substring(0, 50) + '...'
-                      : u.fullUrl}
-                  </p>
+                <div className="flex py-1 md:py-3 md:pb-1 items-center">
                   <GiCrossMark
                     title="Delete entry"
                     onClick={() =>
                       startTransition(() => handleDeleteLocal(u.id))
                     }
-                    className="text-lime-400 flex-none hover:text-red-500 cursor-pointer mr-4 transition-colors"
+                    className="text-lime-400 cursor-pointer min-w-2 hover:text-red-500 text-md mr-4 transition-colors"
                   />
-                  <p>{isPending}</p>
-                </td>
-              </tr>
+
+                  <Link
+                    target="blank"
+                    className="text-white"
+                    href={`${baseUrl + u.shortUrl}`}
+                  >
+                    {baseUrl + u.shortUrl}
+                  </Link>
+                  <FaRegCopy
+                    title="Copy short Url"
+                    className="cursor-pointer min-w-2 ml-3 text-md text-white mr-4 hover:text-lime-200 transition-colors"
+                    onClick={(e) => handleCopy(e, u.shortUrl)}
+                  />
+                </div>
+                <div className="flex items-center py-1 md:py-2 md:pt-0 md:ml-auto text-slate-500">
+                  <p
+                    className="break-all cursor-auto pr-2 truncate text-ellipsis overflow-hidden "
+                    title={u.fullUrl}
+                  >
+                    {u.fullUrl.length > 50
+                      ? u.fullUrl.substring(0, 50) + '...'
+                      : u.fullUrl}{' '}
+                  </p>
+                </div>
+              </li>
             ))}
-          </tbody>
-        </table>
+          </ul>
+        </>
       )}
     </div>
   );

@@ -47,10 +47,14 @@ const NewUrlForm = () => {
 
   return (
     <>
-      <form ref={ref} onSubmit={(e) => handleSubmit(e)} className="w-full">
-        <div className="flex items-stretch py-2">
+      <form
+        ref={ref}
+        onSubmit={(e) => handleSubmit(e)}
+        className="max-auto md:w-full"
+      >
+        <div className="md:flex py-2">
           <input
-            className="appearance-none bg-gray-900 w-full mr-3 p-4 pl-6 text-white leading-tight border border-lime-400 focus:outline-none"
+            className="appearance-none mb-2 bg-gray-900 w-full mr-3 px-6 p-4 pl-6 md:mb-0 text-white leading-tight border border-lime-400 focus:outline-none"
             type="text"
             name="fullUrl"
             placeholder="http://"
@@ -58,7 +62,7 @@ const NewUrlForm = () => {
           />
           <button
             disabled={isPending}
-            className="bg-lime-400 hover:bg-lime-500 text-gray-900 text-sm px-4 font-bold"
+            className="bg-lime-400 hover:bg-lime-500 text-gray-900 text-md px-4 md:text-sm md:py-2 font-bold min-h-12 md:min-h-0"
           >
             Jam
           </button>

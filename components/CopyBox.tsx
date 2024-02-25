@@ -19,9 +19,9 @@ const CopyBox = () => {
 
   if (!generatedUrl) return;
   return (
-    <div className="text-grey-90 bg-lime-400 p-4 flex">
+    <div className="p-4 flex  text-white bg-gradient-to-b from-gray-900 from-10% to-gray-800 to-90% border border-gray-600 rounded-md border-1">
       {generatedUrl && (
-        <Link href={generatedUrl} className="underline font-bold">
+        <Link href={generatedUrl} className="underline hover:text-lime-400">
           {generatedUrl}
         </Link>
       )}
@@ -30,7 +30,7 @@ const CopyBox = () => {
           'Copied!'
         ) : (
           <FaRegCopy
-            className="cursor-pointer text-xl hover:text-white transition-colors"
+            className="cursor-pointer text-xl hover:text-lime-400 transition-colors"
             onClick={(e) => handleCopy(generatedUrl)}
           />
         )}
