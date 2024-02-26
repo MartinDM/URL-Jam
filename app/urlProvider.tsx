@@ -10,10 +10,11 @@ export function useUrlContext() {
 }
 
 export default function UrlProvider({ children }) {
-  const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
   const [localUrls, setLocalUrls] = useLocalStorage([], 'urls');
-  const [topUrl, setTopUrl] = useState<ValidEntry[] | null>(null);
+  const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
+  const [topUrl, setTopUrl] = useState<ValidEntry | null>(null);
   const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     let baseUrl: string;
@@ -36,7 +37,6 @@ export default function UrlProvider({ children }) {
         setGeneratedUrl(null);
       }
     }
-    // urls is localstorage
   }, [localUrls]);
 
   return (
@@ -44,6 +44,7 @@ export default function UrlProvider({ children }) {
       value={{
         generate: [generatedUrl, setGeneratedUrl],
         copy: [isCopied, setIsCopied],
+        loading: [isLoading, setIsLoading],
         urls: [localUrls, setLocalUrls],
       }}
     >

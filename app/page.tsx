@@ -1,5 +1,4 @@
 import UrlList from '@/components/UrlList';
-import db from '@/app/utils/db';
 import NewUrlForm from '@/components/NewUrlForm';
 import CopyBox from '@/components/CopyBox';
 import Link from 'next/link';

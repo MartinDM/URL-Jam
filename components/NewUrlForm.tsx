@@ -10,22 +10,24 @@ const NewUrlForm = () => {
   const ref = useRef<HTMLFormElement>(null);
   ref.current?.reset();
 
-  const { urls, generate } = useUrlContext();
+  const { urls, generate, loading } = useUrlContext();
   const [localUrls, setLocalUrls] = urls;
   const [generatedUrl, setGeneratedUrl] = generate;
+  const [isLoading, setIsLoading] = loading;
   const [errors, setErrors] = useState<string | null>(null);
 
   const [isPending, startTransition] = useTransition();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true)
     setErrors(null);
-    setGeneratedUrl(null);
     let fullUrl = e.target[0].value.trim();
 
     const isValidInput = ValidInput.safeParse(fullUrl);
     if (!isValidInput.success) {
       setErrors(isValidInput.error.issues[0].message);
+      setIsLoading(false)
       return;
     }
     if (!hasProtocol(fullUrl)) {
@@ -39,9 +41,11 @@ const NewUrlForm = () => {
       const newEntry = await newUrl(fullUrl);
       const newUrls: ValidUrl[] = [...localUrls, newEntry];
       setLocalUrls(newUrls);
+      setIsLoading(false)
+      setGeneratedUrl('test');
     } else {
       setErrors(isValidUrl.error.issues[0].message);
-      return;
+      setIsLoading(false)
     }
   };
 
@@ -54,6 +58,7 @@ const NewUrlForm = () => {
       >
         <div className="md:flex py-2">
           <input
+            autoComplete='off'
             className="appearance-none mb-2 bg-gray-900 w-full mr-3 px-6 p-4 pl-6 md:mb-0 text-white leading-tight border border-lime-400 focus:outline-none"
             type="text"
             name="fullUrl"
