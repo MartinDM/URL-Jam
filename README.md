@@ -2,7 +2,10 @@
 
 <img width="550" alt="image" src="https://github.com/MartinDM/url-jam/assets/7467069/ee9977b2-4c0c-48de-a856-6fc7eb343552">
 
-URL Jam is a simple URL shortener application built with Next.js server actions, MongoDB, and Prisma. It allows users to shorten long URLs into more manageable and shareable links.
+
+## View at:  https://url-jam.vercel.app/ 🚀
+
+URL Jam is a simple URL shortener application built with Next.js server actions, MongoDB, and Prisma. It allows users to shorten long URLs into more manageable and shareable links which are stored in `localSotrage`
 
 ## Features
 
