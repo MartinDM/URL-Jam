@@ -3,7 +3,6 @@ import { newUrl } from '@/app/utils/actions';
 import { useRef, useState, useTransition } from 'react';
 import { useUrlContext } from '@/app/urlProvider';
 import { ValidInput, ValidUrl, hasProtocol } from '@/app/utils/validations';
-import { z } from 'zod';
 import normalizeUrl from 'normalize-url';
 
 const NewUrlForm = () => {
@@ -20,14 +19,14 @@ const NewUrlForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true)
+    setIsLoading(true);
     setErrors(null);
     let fullUrl = e.target[0].value.trim();
 
     const isValidInput = ValidInput.safeParse(fullUrl);
     if (!isValidInput.success) {
       setErrors(isValidInput.error.issues[0].message);
-      setIsLoading(false)
+      setIsLoading(false);
       return;
     }
     if (!hasProtocol(fullUrl)) {
@@ -41,11 +40,11 @@ const NewUrlForm = () => {
       const newEntry = await newUrl(fullUrl);
       const newUrls: ValidUrl[] = [...localUrls, newEntry];
       setLocalUrls(newUrls);
-      setIsLoading(false)
+      setIsLoading(false);
       setGeneratedUrl('test');
     } else {
       setErrors(isValidUrl.error.issues[0].message);
-      setIsLoading(false)
+      setIsLoading(false);
     }
   };
 
@@ -58,7 +57,7 @@ const NewUrlForm = () => {
       >
         <div className="md:flex py-2">
           <input
-            autoComplete='off'
+            autoComplete="off"
             className="appearance-none mb-2 bg-gray-900 w-full mr-3 px-6 p-4 pl-6 md:mb-0 text-white leading-tight border border-lime-400 focus:outline-none"
             type="text"
             name="fullUrl"

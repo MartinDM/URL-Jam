@@ -15,9 +15,9 @@ const UrlList = () => {
   const [localUrls, setLocalUrls] = urls;
   const [isLoading, setIsLoading] = loading;
 
-  let baseUrl = './short'
+  let baseUrl = './short';
   if (typeof window !== 'undefined') {
-    baseUrl = window.location.href + 'short/'
+    baseUrl = window.location.href + 'short/';
   }
 
   const handleCopy = async (e: MouseEvent, url: string) => {
@@ -38,35 +38,32 @@ const UrlList = () => {
     }
   }, []);
 
-  if (!localUrls?.length) return
+  if (!localUrls?.length) return;
 
   return (
     <>
-      {isLoading &&
+      {isLoading && (
         <ClipLoader
           loading={true}
           color="#a3e635"
           className="m-auto"
           cssOverride={{ display: 'block' }}
         />
-      }
+      )}
       <div className="p-4 pt-0 lg:max-w-3xl ">
-        <h3 className="mx-auto text-left text-lime-400 text-lg">
-          Your URLs
-        </h3>
+        <h3 className="mx-auto text-left text-lime-400 text-lg">Your URLs</h3>
         <ul>
           {localUrls.map((u: ValidEntry) => (
             <li
               key={u.id}
-              className={`py-1 border-b border-b-slate-700 ${isPending ? 'opacity-30' : ''
-                }`}
+              className={`py-1 border-b border-b-slate-700 ${
+                isPending ? 'opacity-30' : ''
+              }`}
             >
               <div className="flex py-1 md:py-3 md:pb-1 items-center">
                 <GiCrossMark
                   title="Delete entry"
-                  onClick={() =>
-                    startTransition(() => handleDeleteLocal(u.id))
-                  }
+                  onClick={() => startTransition(() => handleDeleteLocal(u.id))}
                   className="text-lime-400 cursor-pointer min-w-2 hover:text-red-500 text-md mr-4 transition-colors"
                 />
 

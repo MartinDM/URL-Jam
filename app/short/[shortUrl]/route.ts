@@ -1,7 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server';
 import db from '@/app/utils/db';
 export const GET = async (req: NextRequest, { params }) => {
-  // Associate urlRef to shortUrl
   const shortUrl = params.shortUrl;
   const doc = await db.url.findFirst({
     where: { shortUrl },
